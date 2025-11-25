@@ -1,409 +1,423 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sistema de Gestión ISO 27001 / ISO 20000-1</title>
-    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/global.css" />
     <style>
-        body {
-            background: linear-gradient(135deg, #1e5a8e 0%, #2fa5b8 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-        }
+      body {
+        background: linear-gradient(135deg, #1e5a8e 0%, #2fa5b8 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+      }
 
-        .container {
-            max-width: 1200px;
-            width: 100%;
-        }
+      .container {
+        max-width: 1200px;
+        width: 100%;
+      }
 
-        .header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
+      .header {
+        text-align: center;
+        margin-bottom: 60px;
+      }
 
-        .logo {
-            width: 80px;
-            height: 80px;
-            background-color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            font-size: 40px;
-            font-weight: bold;
-            color: #1e5a8e;
-        }
+      .logo {
+        width: 80px;
+        height: 80px;
+        background-color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+        font-size: 40px;
+        font-weight: bold;
+        color: #1e5a8e;
+      }
 
+      h1 {
+        color: white;
+        font-size: 42px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 20px;
+        font-weight: 400;
+      }
+
+      .intro-card {
+        background-color: white;
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .intro-card h2 {
+        color: #2c3e50;
+        font-size: 24px;
+        margin-bottom: 16px;
+      }
+
+      .intro-card p {
+        color: #5a6c7d;
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 12px;
+      }
+
+      .features-list {
+        list-style: none;
+        margin-top: 20px;
+      }
+
+      .features-list li {
+        color: #5a6c7d;
+        font-size: 16px;
+        padding: 8px 0;
+        padding-left: 32px;
+        position: relative;
+      }
+
+      .features-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #27ae60;
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      .screens-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 24px;
+        margin-bottom: 40px;
+      }
+
+      .screen-card {
+        background-color: white;
+        border-radius: 16px;
+        padding: 0;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+      }
+
+      .screen-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .screen-header {
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        border-bottom: 1px solid #e5e9f2;
+      }
+
+      .screen-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        flex-shrink: 0;
+      }
+
+      .screen-icon.blue {
+        background-color: #e8f2f8;
+      }
+      .screen-icon.green {
+        background-color: #e6f7ed;
+      }
+      .screen-icon.orange {
+        background-color: #fff3e0;
+      }
+      .screen-icon.red {
+        background-color: #fde8e8;
+      }
+      .screen-icon.purple {
+        background-color: #f3e8ff;
+      }
+
+      .screen-title {
+        flex: 1;
+      }
+
+      .screen-title h3 {
+        color: #2c3e50;
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .screen-title p {
+        color: #7f8c9a;
+        font-size: 13px;
+      }
+
+      .screen-body {
+        padding: 24px;
+      }
+
+      .screen-description {
+        color: #5a6c7d;
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .screen-features {
+        list-style: none;
+      }
+
+      .screen-features li {
+        color: #7f8c9a;
+        font-size: 14px;
+        padding: 6px 0;
+        padding-left: 24px;
+        position: relative;
+      }
+
+      .screen-features li:before {
+        content: "•";
+        position: absolute;
+        left: 8px;
+        color: #2fa5b8;
+        font-weight: bold;
+      }
+
+      .view-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background-color: #1e5a8e;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-top: 16px;
+        transition: background-color 0.2s;
+      }
+
+      .screen-card:hover .view-button {
+        background-color: #164a73;
+      }
+
+      .footer {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        margin-top: 40px;
+      }
+
+      @media (max-width: 768px) {
         h1 {
-            color: white;
-            font-size: 42px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          font-size: 32px;
         }
 
         .subtitle {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 20px;
-            font-weight: 400;
-        }
-
-        .intro-card {
-            background-color: white;
-            border-radius: 16px;
-            padding: 32px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .intro-card h2 {
-            color: #2c3e50;
-            font-size: 24px;
-            margin-bottom: 16px;
-        }
-
-        .intro-card p {
-            color: #5a6c7d;
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
-
-        .features-list {
-            list-style: none;
-            margin-top: 20px;
-        }
-
-        .features-list li {
-            color: #5a6c7d;
-            font-size: 16px;
-            padding: 8px 0;
-            padding-left: 32px;
-            position: relative;
-        }
-
-        .features-list li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #27ae60;
-            font-weight: bold;
-            font-size: 18px;
+          font-size: 18px;
         }
 
         .screens-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
+          grid-template-columns: 1fr;
         }
-
-        .screen-card {
-            background-color: white;
-            border-radius: 16px;
-            padding: 0;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-decoration: none;
-            display: block;
-            cursor: pointer;
-        }
-
-        .screen-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .screen-header {
-            padding: 24px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            border-bottom: 1px solid #e5e9f2;
-        }
-
-        .screen-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            flex-shrink: 0;
-        }
-
-        .screen-icon.blue { background-color: #e8f2f8; }
-        .screen-icon.green { background-color: #e6f7ed; }
-        .screen-icon.orange { background-color: #fff3e0; }
-        .screen-icon.red { background-color: #fde8e8; }
-        .screen-icon.purple { background-color: #f3e8ff; }
-
-        .screen-title {
-            flex: 1;
-        }
-
-        .screen-title h3 {
-            color: #2c3e50;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .screen-title p {
-            color: #7f8c9a;
-            font-size: 13px;
-        }
-
-        .screen-body {
-            padding: 24px;
-        }
-
-        .screen-description {
-            color: #5a6c7d;
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .screen-features {
-            list-style: none;
-        }
-
-        .screen-features li {
-            color: #7f8c9a;
-            font-size: 14px;
-            padding: 6px 0;
-            padding-left: 24px;
-            position: relative;
-        }
-
-        .screen-features li:before {
-            content: "•";
-            position: absolute;
-            left: 8px;
-            color: #2fa5b8;
-            font-weight: bold;
-        }
-
-        .view-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background-color: #1e5a8e;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-top: 16px;
-            transition: background-color 0.2s;
-        }
-
-        .screen-card:hover .view-button {
-            background-color: #164a73;
-        }
-
-        .footer {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 14px;
-            margin-top: 40px;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 32px;
-            }
-
-            .subtitle {
-                font-size: 18px;
-            }
-
-            .screens-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="header">
-            <div class="logo">S</div>
-            <h1>Demo Sistema de Gestión ISO</h1>
-            <div class="subtitle">ISO 27001 | ISO 20000-1</div>
-        </div>
+      <div class="header">
+        <div class="logo">S</div>
+        <h1>Demo Sistema de Gestión ISO</h1>
+        <div class="subtitle">ISO 27001 | ISO 20000-1</div>
+      </div>
 
-        <div class="intro-card">
-            <h2>Bienvenido al Sistema de Gestión de Calidad</h2>
-            <p>
-                Este sistema está diseñado para facilitar la gestión y mantenimiento de certificaciones
-                <strong>ISO 27001</strong> (Seguridad de la Información) e <strong>ISO 20000-1</strong>
-                (Gestión de Servicios TI), proporcionando herramientas completas para el seguimiento y
-                control de todos los procesos del sistema de gestión.
-            </p>
+      <div class="intro-card">
+        <h2>Bienvenido al Sistema de Gestión de Calidad</h2>
+        <p>
+          Este sistema está diseñado para facilitar la gestión y mantenimiento
+          de certificaciones
+          <strong>ISO 27001</strong> (Seguridad de la Información) e
+          <strong>ISO 20000-1</strong>
+          (Gestión de Servicios TI), proporcionando herramientas completas para
+          el seguimiento y control de todos los procesos del sistema de gestión.
+        </p>
 
-            <ul class="features-list">
-                <li>Seguimiento de Planes de Acción Correctiva (PAC) y Mejora (PAM)</li>
-                <li>Monitorización de Indicadores de Proceso y KPIs</li>
-                <li>Gestión de Objetivos Anuales y Planes de Acción</li>
-                <li>Control de Informes por Servicio</li>
-                <li>Gestión de Quejas y Reclamaciones</li>
-                <li>Seguimiento de Pruebas de Continuidad del Negocio</li>
-                <li>Auditorías Internas y Externas</li>
+        <ul class="features-list">
+          <li>
+            Seguimiento de Planes de Acción Correctiva (PAC) y Mejora (PAM)
+          </li>
+          <li>Monitorización de Indicadores de Proceso y KPIs</li>
+          <li>Gestión de Objetivos Anuales y Planes de Acción</li>
+          <li>Control de Informes por Servicio</li>
+          <li>Gestión de Quejas y Reclamaciones</li>
+          <li>Seguimiento de Pruebas de Continuidad del Negocio</li>
+          <li>Auditorías Internas y Externas</li>
+        </ul>
+      </div>
+
+      <div class="screens-grid">
+        <!-- Dashboard -->
+        <div class="screen-card" onclick="navigateTo('pages/dashboard.html')">
+          <div class="screen-header">
+            <div class="screen-icon blue">
+              <span>📊</span>
+            </div>
+            <div class="screen-title">
+              <h3>Dashboard Principal</h3>
+              <p>Vista general del sistema</p>
+            </div>
+          </div>
+          <div class="screen-body">
+            <div class="screen-description">
+              Panel de control centralizado con métricas clave, estado de todos
+              los módulos y acceso rápido a las funcionalidades principales del
+              sistema.
+            </div>
+            <ul class="screen-features">
+              <li>Resumen ejecutivo de todos los módulos</li>
+              <li>Indicadores de estado en tiempo real</li>
+              <li>Acceso rápido a funcionalidades</li>
             </ul>
+            <div class="view-button">Ver pantalla →</div>
+          </div>
         </div>
 
-        <div class="screens-grid">
-            <!-- Dashboard -->
-            <div class="screen-card" onclick="navigateTo('/dashboard.html')">
-                <div class="screen-header">
-                    <div class="screen-icon blue">
-                        <span>📊</span>
-                    </div>
-                    <div class="screen-title">
-                        <h3>Dashboard Principal</h3>
-                        <p>Vista general del sistema</p>
-                    </div>
-                </div>
-                <div class="screen-body">
-                    <div class="screen-description">
-                        Panel de control centralizado con métricas clave, estado de todos los módulos y
-                        acceso rápido a las funcionalidades principales del sistema.
-                    </div>
-                    <ul class="screen-features">
-                        <li>Resumen ejecutivo de todos los módulos</li>
-                        <li>Indicadores de estado en tiempo real</li>
-                        <li>Acceso rápido a funcionalidades</li>
-                    </ul>
-                    <div class="view-button">
-                        Ver pantalla →
-                    </div>
-                </div>
+        <!-- PAC -->
+        <div class="screen-card" onclick="navigateTo('pages/pac.html')">
+          <div class="screen-header">
+            <div class="screen-icon green">
+              <span>📋</span>
             </div>
-
-            <!-- PAC -->
-            <div class="screen-card" onclick="navigateTo('/pac.html')">
-                <div class="screen-header">
-                    <div class="screen-icon green">
-                        <span>📋</span>
-                    </div>
-                    <div class="screen-title">
-                        <h3>Plan de Acciones Correctivas</h3>
-                        <p>Gestión del PAC</p>
-                    </div>
-                </div>
-                <div class="screen-body">
-                    <div class="screen-description">
-                        Gestión completa de acciones correctivas derivadas de no conformidades,
-                        auditorías e incidentes, con seguimiento de progreso y eficacia.
-                    </div>
-                    <ul class="screen-features">
-                        <li>Registro y seguimiento de acciones</li>
-                        <li>Control de plazos y responsables</li>
-                        <li>Medición de eficacia</li>
-                    </ul>
-                    <div class="view-button">
-                        Ver pantalla →
-                    </div>
-                </div>
+            <div class="screen-title">
+              <h3>Plan de Acciones Correctivas</h3>
+              <p>Gestión del PAC</p>
             </div>
-
-            <!-- Indicators -->
-            <div class="screen-card" onclick="navigateTo('/indicadores.html')">
-                <div class="screen-header">
-                    <div class="screen-icon orange">
-                        <span>📈</span>
-                    </div>
-                    <div class="screen-title">
-                        <h3>Indicadores de Proceso</h3>
-                        <p>KPIs y métricas</p>
-                    </div>
-                </div>
-                <div class="screen-body">
-                    <div class="screen-description">
-                        Monitorización de indicadores clave de rendimiento (KPIs) de todos los procesos
-                        del sistema de gestión con alertas automáticas.
-                    </div>
-                    <ul class="screen-features">
-                        <li>Visualización de KPIs en tiempo real</li>
-                        <li>Comparación con metas establecidas</li>
-                        <li>Análisis de tendencias</li>
-                    </ul>
-                    <div class="view-button">
-                        Ver pantalla →
-                    </div>
-                </div>
+          </div>
+          <div class="screen-body">
+            <div class="screen-description">
+              Gestión completa de acciones correctivas derivadas de no
+              conformidades, auditorías e incidentes, con seguimiento de
+              progreso y eficacia.
             </div>
-
-            <!-- Complaints -->
-            <div class="screen-card" onclick="navigateTo('/quejas.html')">
-                <div class="screen-header">
-                    <div class="screen-icon red">
-                        <span>⚠️</span>
-                    </div>
-                    <div class="screen-title">
-                        <h3>Quejas y Reclamaciones</h3>
-                        <p>Gestión de incidencias</p>
-                    </div>
-                </div>
-                <div class="screen-body">
-                    <div class="screen-description">
-                        Sistema completo para la gestión de quejas y reclamaciones de clientes sobre
-                        servicios, con seguimiento de resolución y análisis de satisfacción.
-                    </div>
-                    <ul class="screen-features">
-                        <li>Registro y clasificación de quejas</li>
-                        <li>Seguimiento de tiempos de respuesta</li>
-                        <li>Análisis de causas raíz</li>
-                    </ul>
-                    <div class="view-button">
-                        Ver pantalla →
-                    </div>
-                </div>
-            </div>
-
-            <!-- Continuity Tests -->
-            <div class="screen-card" onclick="navigateTo('/pruebas-continuidad.html')">
-                <div class="screen-header">
-                    <div class="screen-icon purple">
-                        <span>🔄</span>
-                    </div>
-                    <div class="screen-title">
-                        <h3>Pruebas de Continuidad</h3>
-                        <p>Plan de continuidad del negocio</p>
-                    </div>
-                </div>
-                <div class="screen-body">
-                    <div class="screen-description">
-                        Planificación, ejecución y validación de pruebas del plan de continuidad de
-                        negocio con registro de resultados y lecciones aprendidas.
-                    </div>
-                    <ul class="screen-features">
-                        <li>Calendario de pruebas anuales</li>
-                        <li>Registro de resultados y hallazgos</li>
-                        <li>Validación de RTO y RPO</li>
-                    </ul>
-                    <div class="view-button">
-                        Ver pantalla →
-                    </div>
-                </div>
-            </div>
+            <ul class="screen-features">
+              <li>Registro y seguimiento de acciones</li>
+              <li>Control de plazos y responsables</li>
+              <li>Medición de eficacia</li>
+            </ul>
+            <div class="view-button">Ver pantalla →</div>
+          </div>
         </div>
 
-        <div class="footer">
-            <p>Sistema de Gestión de Calidad ISO | Desarrollado con HTML, CSS y JavaScript</p>
+        <!-- Indicators -->
+        <div class="screen-card" onclick="navigateTo('pages/indicadores.html')">
+          <div class="screen-header">
+            <div class="screen-icon orange">
+              <span>📈</span>
+            </div>
+            <div class="screen-title">
+              <h3>Indicadores de Proceso</h3>
+              <p>KPIs y métricas</p>
+            </div>
+          </div>
+          <div class="screen-body">
+            <div class="screen-description">
+              Monitorización de indicadores clave de rendimiento (KPIs) de todos
+              los procesos del sistema de gestión con alertas automáticas.
+            </div>
+            <ul class="screen-features">
+              <li>Visualización de KPIs en tiempo real</li>
+              <li>Comparación con metas establecidas</li>
+              <li>Análisis de tendencias</li>
+            </ul>
+            <div class="view-button">Ver pantalla →</div>
+          </div>
         </div>
+
+        <!-- Complaints -->
+        <div class="screen-card" onclick="navigateTo('pages/quejas.html')">
+          <div class="screen-header">
+            <div class="screen-icon red">
+              <span>⚠️</span>
+            </div>
+            <div class="screen-title">
+              <h3>Quejas y Reclamaciones</h3>
+              <p>Gestión de incidencias</p>
+            </div>
+          </div>
+          <div class="screen-body">
+            <div class="screen-description">
+              Sistema completo para la gestión de quejas y reclamaciones de
+              clientes sobre servicios, con seguimiento de resolución y análisis
+              de satisfacción.
+            </div>
+            <ul class="screen-features">
+              <li>Registro y clasificación de quejas</li>
+              <li>Seguimiento de tiempos de respuesta</li>
+              <li>Análisis de causas raíz</li>
+            </ul>
+            <div class="view-button">Ver pantalla →</div>
+          </div>
+        </div>
+
+        <!-- Continuity Tests -->
+        <div
+          class="screen-card"
+          onclick="navigateTo('pages/pruebas-continuidad.html')"
+        >
+          <div class="screen-header">
+            <div class="screen-icon purple">
+              <span>🔄</span>
+            </div>
+            <div class="screen-title">
+              <h3>Pruebas de Continuidad</h3>
+              <p>Plan de continuidad del negocio</p>
+            </div>
+          </div>
+          <div class="screen-body">
+            <div class="screen-description">
+              Planificación, ejecución y validación de pruebas del plan de
+              continuidad de negocio con registro de resultados y lecciones
+              aprendidas.
+            </div>
+            <ul class="screen-features">
+              <li>Calendario de pruebas anuales</li>
+              <li>Registro de resultados y hallazgos</li>
+              <li>Validación de RTO y RPO</li>
+            </ul>
+            <div class="view-button">Ver pantalla →</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>
+          Sistema de Gestión de Calidad ISO | Desarrollado con HTML, CSS y
+          JavaScript
+        </p>
+      </div>
     </div>
 
     <!-- Scripts -->
     <script src="js/storage.js"></script>
     <script src="js/components.js"></script>
-</body>
+  </body>
 </html>

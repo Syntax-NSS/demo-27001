@@ -12,19 +12,19 @@ function renderSidebar(activePage = '') {
             <div class="logo-container" onclick="navigateTo('index.html')">
                 <span class="back-arrow">←</span>
             </div>
-            <div class="nav-item ${activePage === 'dashboard' ? 'active' : ''}" onclick="navigateTo('dashboard.html')" title="Dashboard">
+            <div class="nav-item ${activePage === 'dashboard' ? 'active' : ''}" onclick="navigateTo('./dashboard.html')" title="Dashboard">
                 <span class="nav-icon">🏠</span>
             </div>
-            <div class="nav-item ${activePage === 'pac' ? 'active' : ''}" onclick="navigateTo('pac.html')" title="Plan de Acciones Correctivas">
+            <div class="nav-item ${activePage === 'pac' ? 'active' : ''}" onclick="navigateTo('./pac.html')" title="Plan de Acciones Correctivas">
                 <span class="nav-icon">📋</span>
             </div>
-            <div class="nav-item ${activePage === 'indicadores' ? 'active' : ''}" onclick="navigateTo('indicadores.html')" title="Indicadores">
+            <div class="nav-item ${activePage === 'indicadores' ? 'active' : ''}" onclick="navigateTo('./indicadores.html')" title="Indicadores">
                 <span class="nav-icon">📈</span>
             </div>
-            <div class="nav-item ${activePage === 'quejas' ? 'active' : ''}" onclick="navigateTo('quejas.html')" title="Quejas y Reclamaciones">
+            <div class="nav-item ${activePage === 'quejas' ? 'active' : ''}" onclick="navigateTo('./quejas.html')" title="Quejas y Reclamaciones">
                 <span class="nav-icon">⚠️</span>
             </div>
-            <div class="nav-item ${activePage === 'pruebas' ? 'active' : ''}" onclick="navigateTo('pruebas-continuidad.html')" title="Pruebas de Continuidad">
+            <div class="nav-item ${activePage === 'pruebas' ? 'active' : ''}" onclick="navigateTo('./pruebas-continuidad.html')" title="Pruebas de Continuidad">
                 <span class="nav-icon">🔄</span>
             </div>
         </div>
