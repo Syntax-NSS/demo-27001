@@ -1,84 +1,404 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Indicadores de Proceso</title>
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/global.css" />
+    <link rel="stylesheet" href="../css/components.css" />
     <style>
-        body { background-color: var(--color-background); }
-        .main-content { margin-left: 90px; }
-        .page-title { padding: 20px 40px; }
-        .page-title h1 { font-size: 32px; font-weight: 600; }
-        .content-card { margin: 30px 40px; background-color: #ffffff; border-radius: 12px; box-shadow: var(--shadow-sm); overflow: hidden; }
-        .card-header-section { background-color: var(--color-secondary); padding: 20px 30px; color: white; font-weight: 600; font-size: 18px; }
-        .filters-section { padding: 30px; border-bottom: 1px solid var(--color-border); }
-        .filters-grid { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 20px; align-items: end; }
-        .indicators-grid { padding: 30px; display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; }
-        .indicator-card { background-color: #ffffff; border: 1px solid var(--color-border); border-radius: 12px; padding: 24px; transition: box-shadow 0.2s; cursor: pointer; }
-        .indicator-card:hover { box-shadow: var(--shadow-md); }
-        .indicator-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-        .indicator-title { font-size: 15px; font-weight: 600; color: var(--color-text-primary); line-height: 1.4; flex: 1; }
-        .indicator-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .indicator-icon.green { background-color: var(--color-success-bg); }
-        .indicator-icon.orange { background-color: var(--color-warning-bg); }
-        .indicator-icon.red { background-color: var(--color-danger-bg); }
-        .indicator-value { font-size: 36px; font-weight: 700; color: var(--color-text-primary); margin: 16px 0 8px 0; }
-        .indicator-description { font-size: 13px; color: var(--color-text-muted); margin-bottom: 16px; }
-        .indicator-meta { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid var(--color-border-light); }
-        .chart-placeholder { width: 100%; height: 60px; background: linear-gradient(to right, #e8f2f8, #d1ecf1, #e8f2f8); border-radius: 8px; margin: 16px 0; }
+      body {
+        background-color: var(--color-background);
+      }
+      .main-content {
+        margin-left: 90px;
+      }
+      .page-title {
+        padding: 20px 40px;
+      }
+      .page-title h1 {
+        font-size: 32px;
+        font-weight: 600;
+      }
+      .content-card {
+        margin: 30px 40px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+      }
+      .card-header-section {
+        background-color: var(--color-secondary);
+        padding: 20px 30px;
+        color: white;
+        font-weight: 600;
+        font-size: 18px;
+      }
+      .filters-section {
+        padding: 30px;
+        border-bottom: 1px solid var(--color-border);
+      }
+      .filters-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        gap: 20px;
+        align-items: end;
+      }
+      .indicators-grid {
+        padding: 30px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 24px;
+      }
+      .indicator-card {
+        background-color: #ffffff;
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+        padding: 24px;
+        transition: box-shadow 0.2s;
+        cursor: pointer;
+      }
+      .indicator-card:hover {
+        box-shadow: var(--shadow-md);
+      }
+      .indicator-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+      .indicator-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        line-height: 1.4;
+        flex: 1;
+      }
+      .indicator-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+      }
+      .indicator-icon.green {
+        background-color: var(--color-success-bg);
+      }
+      .indicator-icon.orange {
+        background-color: var(--color-warning-bg);
+      }
+      .indicator-icon.red {
+        background-color: var(--color-danger-bg);
+      }
+      .indicator-value {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--color-text-primary);
+        margin: 16px 0 8px 0;
+      }
+      .indicator-description {
+        font-size: 13px;
+        color: var(--color-text-muted);
+        margin-bottom: 16px;
+      }
+      .indicator-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 16px;
+        border-top: 1px solid var(--color-border-light);
+      }
+      .chart-placeholder {
+        width: 100%;
+        height: 60px;
+        background: linear-gradient(to right, #e8f2f8, #d1ecf1, #e8f2f8);
+        border-radius: 8px;
+        margin: 16px 0;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="sidebar"></div>
     <div class="main-content">
-        <div id="header"></div>
-        <div id="breadcrumb"></div>
-        <div class="page-title"><h1>Indicadores de Proceso</h1></div>
-        <div class="content-card">
-            <div class="card-header-section">Indicadores de Proceso</div>
-            <div class="filters-section">
-                <div class="filters-grid">
-                    <div class="form-group" style="margin: 0;"><label class="form-label">Proceso</label><select class="form-control" id="filterProceso" onchange="applyFilters()"><option value="">Todos</option></select></div>
-                    <div class="form-group" style="margin: 0;"><label class="form-label">Periodo</label><select class="form-control" id="filterPeriodo"><option value="2024-11">Mes actual</option><option value="2024-Q4">Último trimestre</option><option value="2024">Año actual</option></select></div>
-                    <div class="form-group" style="margin: 0;"><label class="form-label">Estado</label><select class="form-control" id="filterEstado" onchange="applyFilters()"><option value="">Todos</option><option value="en_meta">En meta</option><option value="alerta">En alerta</option><option value="critico">Crítico</option></select></div>
-                    <button class="btn btn-primary" onclick="showIndicadorForm()">+ Nuevo indicador</button>
-                </div>
+      <div id="header"></div>
+      <div id="breadcrumb"></div>
+      <div class="page-title"><h1>Indicadores de Proceso</h1></div>
+      <div class="content-card">
+        <div class="card-header-section">Indicadores de Proceso</div>
+        <div class="filters-section">
+          <div class="filters-grid">
+            <div class="form-group" style="margin: 0">
+              <label class="form-label">Proceso</label
+              ><select
+                class="form-control"
+                id="filterProceso"
+                onchange="applyFilters()"
+              >
+                <option value="">Todos</option>
+              </select>
             </div>
-            <div class="indicators-grid" id="indicatorsGrid"></div>
+            <div class="form-group" style="margin: 0">
+              <label class="form-label">Periodo</label
+              ><select class="form-control" id="filterPeriodo">
+                <option value="2024-11">Mes actual</option>
+                <option value="2024-Q4">Último trimestre</option>
+                <option value="2024">Año actual</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin: 0">
+              <label class="form-label">Estado</label
+              ><select
+                class="form-control"
+                id="filterEstado"
+                onchange="applyFilters()"
+              >
+                <option value="">Todos</option>
+                <option value="en_meta">En meta</option>
+                <option value="alerta">En alerta</option>
+                <option value="critico">Crítico</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="showIndicadorForm()">
+              + Nuevo indicador
+            </button>
+          </div>
         </div>
+        <div class="indicators-grid" id="indicatorsGrid"></div>
+      </div>
+    </div>
+
+    <!-- Modal Formulario Indicador -->
+    <div
+      id="indicadorFormModal"
+      class="modal-overlay"
+      style="display: none"
+      onclick="closeModalOnOverlayClick(event, 'indicadorFormModal')"
+    >
+      <div
+        class="modal"
+        onclick="event.stopPropagation()"
+        style="max-width: 720px"
+      >
+        <div class="modal-header">
+          <h3 class="modal-title" id="indicadorModalTitle">Nuevo Indicador</h3>
+          <button
+            class="modal-close"
+            onclick="closeModal('indicadorFormModal')"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="indicadorForm">
+            <input type="hidden" id="indicadorId" />
+            <div class="form-group">
+              <label class="form-label required">Título</label>
+              <input type="text" class="form-control" id="titulo" required />
+              <span class="form-error"></span>
+            </div>
+            <div
+              style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px"
+            >
+              <div class="form-group">
+                <label class="form-label required">Proceso</label>
+                <select class="form-control" id="proceso" required>
+                  <option value="">Seleccionar...</option>
+                  <option value="Gestión de Incidentes">
+                    Gestión de Incidentes
+                  </option>
+                  <option value="Gestión de Servicios">
+                    Gestión de Servicios
+                  </option>
+                  <option value="Gestión de Cambios">Gestión de Cambios</option>
+                  <option value="Gestión de Calidad">Gestión de Calidad</option>
+                  <option value="Gestión de Seguridad">
+                    Gestión de Seguridad
+                  </option>
+                  <option value="Gestión de Continuidad">
+                    Gestión de Continuidad
+                  </option>
+                </select>
+                <span class="form-error"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label required">Periodo</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="periodo"
+                  placeholder="e.j. 2024-11"
+                  required
+                />
+                <span class="form-error"></span>
+              </div>
+            </div>
+
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-top: 12px;
+              "
+            >
+              <div class="form-group">
+                <label class="form-label required">Valor actual</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="valorActual"
+                  required
+                />
+                <span class="form-error"></span>
+              </div>
+              <div class="form-group">
+                <label class="form-label required">Meta</label>
+                <input type="text" class="form-control" id="meta" required />
+                <span class="form-error"></span>
+              </div>
+            </div>
+
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-top: 12px;
+              "
+            >
+              <div class="form-group">
+                <label class="form-label">Unidad</label>
+                <input type="text" class="form-control" id="unidad" />
+              </div>
+              <div class="form-group">
+                <label class="form-label required">Estado</label>
+                <select class="form-control" id="estado" required>
+                  <option value="en_meta">En meta</option>
+                  <option value="alerta">En alerta</option>
+                  <option value="critico">Crítico</option>
+                </select>
+              </div>
+            </div>
+
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+                margin-top: 12px;
+              "
+            >
+              <div class="form-group">
+                <label class="form-label required">Tendencia</label>
+                <select class="form-control" id="tendencia" required>
+                  <option value="up">Ascendente</option>
+                  <option value="stable">Estable</option>
+                  <option value="down">Descendente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Valor tendencia</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="tendenciaValor"
+                  placeholder="e.j. 15%"
+                />
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 12px">
+              <label class="form-label">Descripción</label>
+              <textarea
+                class="form-control"
+                id="descripcion"
+                rows="3"
+              ></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div style="margin-right: auto">
+            <button
+              id="deleteIndicadorBtn"
+              class="btn btn-danger"
+              style="display: none"
+              onclick="confirmDeleteIndicador()"
+            >
+              Eliminar
+            </button>
+          </div>
+          <button
+            class="btn btn-secondary"
+            onclick="closeModal('indicadorFormModal')"
+          >
+            Cancelar
+          </button>
+          <button class="btn btn-primary" onclick="saveIndicador()">
+            Guardar
+          </button>
+        </div>
+      </div>
     </div>
 
     <script src="../js/storage.js"></script>
     <script src="../js/components.js"></script>
     <script>
-        document.getElementById('sidebar').innerHTML = renderSidebar('indicadores');
-        document.getElementById('header').innerHTML = renderHeader();
-        document.getElementById('breadcrumb').innerHTML = renderBreadcrumb([
-            { icon: '🏠', text: 'Inicio', link: '../index.html' },
-            { text: 'Gestión de Calidad' },
-            { text: 'Indicadores de Proceso' }
-        ]);
+      // ...existing code...
+      document.getElementById("sidebar").innerHTML =
+        renderSidebar("indicadores");
+      document.getElementById("header").innerHTML = renderHeader();
+      document.getElementById("breadcrumb").innerHTML = renderBreadcrumb([
+        { icon: "🏠", text: "Inicio", link: "../index.html" },
+        { text: "Gestión de Calidad" },
+        { text: "Indicadores de Proceso" },
+      ]);
 
-        let currentFilters = {};
+      let currentFilters = {};
 
-        function loadIndicadores() {
-            const data = storage.filter('indicadores', currentFilters);
-            const procesos = [...new Set(storage.getAll('indicadores').map(i => i.proceso))];
-            document.getElementById('filterProceso').innerHTML = '<option value="">Todos</option>' + procesos.map(p => `<option value="${p}">${p}</option>`).join('');
+      function loadIndicadores() {
+        const data = storage.filter("indicadores", currentFilters);
+        const procesos = [
+          ...new Set(storage.getAll("indicadores").map((i) => i.proceso)),
+        ];
+        document.getElementById("filterProceso").innerHTML =
+          '<option value="">Todos</option>' +
+          procesos.map((p) => `<option value="${p}">${p}</option>`).join("");
 
-            const iconMap = { 'Gestión de Incidentes': '⚡', 'Gestión de Servicios': '📊', 'Gestión de Cambios': '🔄', 'Gestión de Calidad': '⭐', 'Gestión de Seguridad': '🔒', 'Gestión de Continuidad': '💾' };
-            const colorMap = { 'en_meta': 'green', 'alerta': 'orange', 'critico': 'red' };
-            const estadoLabels = { 'en_meta': 'En meta', 'alerta': 'En alerta', 'critico': 'Crítico' };
-            const tendenciaIcons = { 'up': '↑', 'down': '↓', 'stable': '→' };
-            const tendenciaColors = { 'up': 'success', 'down': 'danger', 'stable': 'info' };
+        const iconMap = {
+          "Gestión de Incidentes": "⚡",
+          "Gestión de Servicios": "📊",
+          "Gestión de Cambios": "🔄",
+          "Gestión de Calidad": "⭐",
+          "Gestión de Seguridad": "🔒",
+          "Gestión de Continuidad": "💾",
+        };
+        const colorMap = { en_meta: "green", alerta: "orange", critico: "red" };
+        const estadoLabels = {
+          en_meta: "En meta",
+          alerta: "En alerta",
+          critico: "Crítico",
+        };
+        const tendenciaIcons = { up: "↑", down: "↓", stable: "→" };
+        const tendenciaColors = {
+          up: "success",
+          down: "danger",
+          stable: "info",
+        };
 
-            document.getElementById('indicatorsGrid').innerHTML = data.map(ind => `
-                <div class="indicator-card" onclick="editIndicador('${ind.id}')">
+        document.getElementById("indicatorsGrid").innerHTML = data
+          .map(
+            (ind) => `
+                <div class="indicator-card" onclick="editIndicador('${
+                  ind.id
+                }')">
                     <div class="indicator-header">
                         <div class="indicator-title">${ind.titulo}</div>
-                        <div class="indicator-icon ${colorMap[ind.estado]}">${iconMap[ind.proceso] || '📈'}</div>
+                        <div class="indicator-icon ${colorMap[ind.estado]}">${
+              iconMap[ind.proceso] || "📈"
+            }</div>
                     </div>
                     <div class="indicator-value">${ind.valorActual}</div>
                     <div class="indicator-description">Meta: ${ind.meta}</div>
@@ -86,34 +406,128 @@
                     <div class="indicator-meta">
                         <div>
                             <div style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 4px;">ESTADO</div>
-                            <span class="badge badge-${colorMap[ind.estado] === 'green' ? 'success' : colorMap[ind.estado] === 'orange' ? 'warning' : 'danger'}">${estadoLabels[ind.estado]}</span>
+                            <span class="badge badge-${
+                              colorMap[ind.estado] === "green"
+                                ? "success"
+                                : colorMap[ind.estado] === "orange"
+                                ? "warning"
+                                : "danger"
+                            }">${estadoLabels[ind.estado]}</span>
                         </div>
                         <div>
                             <div style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 4px;">TENDENCIA</div>
-                            <span class="badge badge-${tendenciaColors[ind.tendencia]}">${tendenciaIcons[ind.tendencia]} ${ind.tendenciaValor}</span>
+                            <span class="badge badge-${
+                              tendenciaColors[ind.tendencia]
+                            }">${tendenciaIcons[ind.tendencia]} ${
+              ind.tendenciaValor
+            }</span>
                         </div>
                     </div>
                 </div>
-            `).join('');
-        }
+            `
+          )
+          .join("");
+      }
 
-        function applyFilters() {
-            currentFilters = {
-                proceso: document.getElementById('filterProceso').value,
-                estado: document.getElementById('filterEstado').value
-            };
-            loadIndicadores();
-        }
-
-        function showIndicadorForm() {
-            showAlert('Funcionalidad de crear/editar indicadores disponible. Use el formulario modal similar al PAC.', 'info', 2000);
-        }
-
-        function editIndicador(id) {
-            showAlert(`Editando indicador ${id}`, 'info', 1500);
-        }
-
+      function applyFilters() {
+        currentFilters = {
+          proceso: document.getElementById("filterProceso").value,
+          estado: document.getElementById("filterEstado").value,
+        };
         loadIndicadores();
+      }
+
+      // --- Nuevo: CRUD modal para indicadores (basado en PAC) ---
+      function showIndicadorForm() {
+        document.getElementById("indicadorModalTitle").textContent =
+          "Nuevo Indicador";
+        clearForm("indicadorForm");
+        document.getElementById("indicadorId").value = "";
+        document.getElementById("deleteIndicadorBtn").style.display = "none";
+        openModal("indicadorFormModal");
+      }
+
+      function editIndicador(id) {
+        const ind = storage.getById("indicadores", id);
+        if (!ind) {
+          showAlert("Indicador no encontrado", "error");
+          return;
+        }
+        document.getElementById("indicadorModalTitle").textContent =
+          "Editar Indicador";
+        clearForm("indicadorForm");
+
+        document.getElementById("indicadorId").value = ind.id;
+        document.getElementById("titulo").value = ind.titulo || "";
+        document.getElementById("proceso").value = ind.proceso || "";
+        document.getElementById("periodo").value = ind.periodo || "";
+        document.getElementById("valorActual").value = ind.valorActual || "";
+        document.getElementById("meta").value = ind.meta || "";
+        document.getElementById("unidad").value = ind.unidad || "";
+        document.getElementById("estado").value = ind.estado || "en_meta";
+        document.getElementById("tendencia").value = ind.tendencia || "stable";
+        document.getElementById("tendenciaValor").value =
+          ind.tendenciaValor || "";
+        document.getElementById("descripcion").value = ind.descripcion || "";
+
+        document.getElementById("deleteIndicadorBtn").style.display =
+          "inline-block";
+        openModal("indicadorFormModal");
+      }
+
+      function saveIndicador() {
+        // Usa la función validateForm definida en components.js (está disponible en PAC)
+        if (typeof validateForm === "function") {
+          if (!validateForm("indicadorForm")) return;
+        } else {
+          // validación mínima por si no existe validateForm
+          const titulo = document.getElementById("titulo").value.trim();
+          if (!titulo) {
+            showAlert("El título es requerido", "error");
+            return;
+          }
+        }
+
+        const id = document.getElementById("indicadorId").value;
+        const data = {
+          titulo: document.getElementById("titulo").value,
+          proceso: document.getElementById("proceso").value,
+          periodo: document.getElementById("periodo").value,
+          valorActual: document.getElementById("valorActual").value,
+          meta: document.getElementById("meta").value,
+          unidad: document.getElementById("unidad").value,
+          estado: document.getElementById("estado").value,
+          tendencia: document.getElementById("tendencia").value,
+          tendenciaValor: document.getElementById("tendenciaValor").value,
+          descripcion: document.getElementById("descripcion").value,
+          fechaActualizacion: new Date().toISOString().split("T")[0],
+        };
+
+        if (id) {
+          storage.update("indicadores", id, data);
+          showAlert("Indicador actualizado exitosamente", "success");
+        } else {
+          storage.create("indicadores", data);
+          showAlert("Indicador creado exitosamente", "success");
+        }
+
+        closeModal("indicadorFormModal");
+        loadIndicadores();
+      }
+
+      function confirmDeleteIndicador() {
+        const id = document.getElementById("indicadorId").value;
+        if (!id) return;
+        if (confirm("¿Está seguro de eliminar este indicador?")) {
+          storage.delete("indicadores", id);
+          showAlert("Indicador eliminado", "success");
+          closeModal("indicadorFormModal");
+          loadIndicadores();
+        }
+      }
+
+      // Inicializar lista
+      loadIndicadores();
     </script>
-</body>
+  </body>
 </html>
