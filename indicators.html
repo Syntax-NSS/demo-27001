@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indicadores de Proceso - Sistema de Gestión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            color: #2c3e50;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 90px;
+            height: 100vh;
+            background-color: #ffffff;
+            border-right: 1px solid #e5e9f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            width: 50px;
+            height: 50px;
+            background-color: #1e5a8e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            cursor: pointer;
+        }
+
+        .main-content {
+            margin-left: 90px;
+        }
+
+        .header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e9f2;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background-color: #1e5a8e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .breadcrumb {
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #7f8c9a;
+        }
+
+        .page-title {
+            padding: 20px 40px;
+            font-size: 32px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .content-card {
+            margin: 30px 40px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .card-header-section {
+            background-color: #2fa5b8;
+            padding: 20px 30px;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .filters-section {
+            padding: 30px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e9f2;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 20px;
+            align-items: end;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .filter-select {
+            padding: 10px 14px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #5a6c7d;
+            background-color: white;
+            cursor: pointer;
+            width: 100%;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%235a6c7d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+
+        .btn-primary {
+            background-color: #1e5a8e;
+            color: white;
+            border: none;
+            padding: 11px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .indicators-grid {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+
+        .indicator-card {
+            background-color: #ffffff;
+            border: 1px solid #e5e9f2;
+            border-radius: 12px;
+            padding: 24px;
+            transition: box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .indicator-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .indicator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .indicator-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+
+        .indicator-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .indicator-icon.green {
+            background-color: #e6f7ed;
+        }
+
+        .indicator-icon.orange {
+            background-color: #fff3e0;
+        }
+
+        .indicator-icon.red {
+            background-color: #fde8e8;
+        }
+
+        .indicator-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 16px 0 8px 0;
+        }
+
+        .indicator-description {
+            font-size: 13px;
+            color: #7f8c9a;
+            margin-bottom: 16px;
+        }
+
+        .indicator-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid #f0f4f8;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-label {
+            font-size: 11px;
+            color: #7f8c9a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .trend-up {
+            background-color: #d4edda;
+            color: #27ae60;
+        }
+
+        .trend-down {
+            background-color: #f8d7da;
+            color: #e74c3c;
+        }
+
+        .trend-stable {
+            background-color: #e8f2f8;
+            color: #1e5a8e;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-on-target {
+            background-color: #d4edda;
+            color: #27ae60;
+        }
+
+        .status-warning {
+            background-color: #fff3cd;
+            color: #f39c12;
+        }
+
+        .status-critical {
+            background-color: #f8d7da;
+            color: #e74c3c;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(to right, #e8f2f8, #d1ecf1, #e8f2f8);
+            border-radius: 8px;
+            margin: 16px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-line {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(to bottom, rgba(30, 90, 142, 0.2), rgba(30, 90, 142, 0));
+            clip-path: polygon(0% 60%, 10% 45%, 20% 50%, 30% 30%, 40% 35%, 50% 20%, 60% 25%, 70% 15%, 80% 18%, 90% 10%, 100% 5%, 100% 100%, 0% 100%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <span style="color: white; font-size: 24px; font-weight: bold;">←</span>
+        </div>
+        <div style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 10px 0; cursor: pointer;">
+            <span style="font-size: 20px;">🔍</span>
+        </div>
+        <div style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 10px 0; cursor: pointer;">
+            <span style="font-size: 20px;">🏠</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div></div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <button style="border: none; background: none; cursor: pointer; font-size: 20px;">❓</button>
+                <button style="border: none; background: none; cursor: pointer; font-size: 20px;">⚙️</button>
+                <button style="border: none; background: none; cursor: pointer; font-size: 20px;">📧</button>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="user-avatar">KS</div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px;">Kepa Syntax</div>
+                        <div style="font-size: 12px; color: #7f8c9a;">kepa@syntax.com</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <span>🏠</span>
+            <span style="color: #cbd5e0;">›</span>
+            <span style="color: #7f8c9a;">Gestión de Calidad</span>
+            <span style="color: #cbd5e0;">›</span>
+            <span style="color: #2c3e50;">Indicadores de Proceso</span>
+        </div>
+
+        <!-- Page Title -->
+        <div class="page-title">
+            Indicadores de Proceso
+        </div>
+
+        <!-- Content Card -->
+        <div class="content-card">
+            <!-- Card Header -->
+            <div class="card-header-section">
+                Indicadores de Proceso
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div>
+                        <div class="filter-label">Proceso</div>
+                        <select class="filter-select">
+                            <option>Todos los procesos</option>
+                            <option>Gestión de Incidentes</option>
+                            <option>Gestión de Cambios</option>
+                            <option>Gestión de Problemas</option>
+                            <option>Gestión de Seguridad</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <div class="filter-label">Periodo</div>
+                        <select class="filter-select">
+                            <option>Mes actual</option>
+                            <option>Último trimestre</option>
+                            <option>Último semestre</option>
+                            <option>Año actual</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <div class="filter-label">Estado</div>
+                        <select class="filter-select">
+                            <option>Todos los estados</option>
+                            <option>En meta</option>
+                            <option>En alerta</option>
+                            <option>Crítico</option>
+                        </select>
+                    </div>
+
+                    <button class="btn-primary">
+                        <span>+</span>
+                        <span>Nuevo indicador</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Indicators Grid -->
+            <div class="indicators-grid">
+                <!-- Indicator 1 -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <div style="flex: 1;">
+                            <div class="indicator-title">Tiempo medio de resolución de incidentes</div>
+                        </div>
+                        <div class="indicator-icon green">
+                            <span>⚡</span>
+                        </div>
+                    </div>
+                    <div class="indicator-value">2.3h</div>
+                    <div class="indicator-description">Meta: ≤ 4 horas</div>
+                    <div class="chart-placeholder">
+                        <div class="chart-line"></div>
+                    </div>
+                    <div class="indicator-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Estado</div>
+                            <span class="status-badge status-on-target">En meta</span>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Tendencia</div>
+                            <span class="trend-indicator trend-up">↑ 15%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicator 2 -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <div style="flex: 1;">
+                            <div class="indicator-title">Disponibilidad de servicios críticos</div>
+                        </div>
+                        <div class="indicator-icon green">
+                            <span>📊</span>
+                        </div>
+                    </div>
+                    <div class="indicator-value">99.7%</div>
+                    <div class="indicator-description">Meta: ≥ 99.5%</div>
+                    <div class="chart-placeholder">
+                        <div class="chart-line"></div>
+                    </div>
+                    <div class="indicator-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Estado</div>
+                            <span class="status-badge status-on-target">En meta</span>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Tendencia</div>
+                            <span class="trend-indicator trend-stable">→ 0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicator 3 -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <div style="flex: 1;">
+                            <div class="indicator-title">Cambios implementados sin incidentes</div>
+                        </div>
+                        <div class="indicator-icon orange">
+                            <span>🔄</span>
+                        </div>
+                    </div>
+                    <div class="indicator-value">88%</div>
+                    <div class="indicator-description">Meta: ≥ 95%</div>
+                    <div class="chart-placeholder">
+                        <div class="chart-line"></div>
+                    </div>
+                    <div class="indicator-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Estado</div>
+                            <span class="status-badge status-warning">En alerta</span>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Tendencia</div>
+                            <span class="trend-indicator trend-down">↓ 7%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicator 4 -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <div style="flex: 1;">
+                            <div class="indicator-title">Satisfacción del cliente</div>
+                        </div>
+                        <div class="indicator-icon green">
+                            <span>⭐</span>
+                        </div>
+                    </div>
+                    <div class="indicator-value">4.6/5</div>
+                    <div class="indicator-description">Meta: ≥ 4.5/5</div>
+                    <div class="chart-placeholder">
+                        <div class="chart-line"></div>
+                    </div>
+                    <div class="indicator-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Estado</div>
+                            <span class="status-badge status-on-target">En meta</span>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Tendencia</div>
+                            <span class="trend-indicator trend-up">↑ 3%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicator 5 -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <div style="flex: 1;">
+                            <div class="indicator-title">Incidentes de seguridad detectados</div>
+                        </div>
+                        <div class="indicator-icon red">
+                            <span>🔒</span>
+                        </div>
+                    </div>
+                    <div class="indicator-value">8</div>
+                    <div class="indicator-description">Meta: ≤ 5 por mes</div>
+                    <div class="chart-placeholder">
+                        <div class="chart-line"></div>
+                    </div>
+                    <div class="indicator-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Estado</div>
+                            <span class="status-badge status-critical">Crítico</span>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Tendencia</div>
+                            <span class="trend-indicator trend-down">↓ 60%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicator 6 -->
+                <div class="indicator-card">
+                    <div class="indicator-header">
+                        <div style="flex: 1;">
+                            <div class="indicator-title">Backups completados exitosamente</div>
+                        </div>
+                        <div class="indicator-icon green">
+                            <span>💾</span>
+                        </div>
+                    </div>
+                    <div class="indicator-value">100%</div>
+                    <div class="indicator-description">Meta: = 100%</div>
+                    <div class="chart-placeholder">
+                        <div class="chart-line"></div>
+                    </div>
+                    <div class="indicator-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Estado</div>
+                            <span class="status-badge status-on-target">En meta</span>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Tendencia</div>
+                            <span class="trend-indicator trend-stable">→ 0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

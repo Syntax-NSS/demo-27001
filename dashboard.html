@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Gestión de Calidad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            color: #2c3e50;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 90px;
+            height: 100vh;
+            background-color: #ffffff;
+            border-right: 1px solid #e5e9f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            width: 50px;
+            height: 50px;
+            background-color: #1e5a8e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            cursor: pointer;
+        }
+
+        .back-arrow {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-item {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .nav-item:hover {
+            background-color: #f0f4f8;
+        }
+
+        .nav-item.active {
+            background-color: #e8f2f8;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            color: #5a6c7d;
+        }
+
+        .main-content {
+            margin-left: 90px;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e9f2;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .icon-button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .icon-button:hover {
+            background-color: #f0f4f8;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background-color: #1e5a8e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+
+        .user-email {
+            font-size: 12px;
+            color: #7f8c9a;
+        }
+
+        .breadcrumb {
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #7f8c9a;
+            background-color: #f5f7fa;
+        }
+
+        .breadcrumb-item {
+            color: #7f8c9a;
+        }
+
+        .breadcrumb-separator {
+            color: #cbd5e0;
+        }
+
+        .breadcrumb-item.active {
+            color: #2c3e50;
+        }
+
+        .page-title {
+            padding: 20px 40px;
+            background-color: #f5f7fa;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .dashboard-grid {
+            padding: 30px 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .card-icon.blue {
+            background-color: #e8f2f8;
+            color: #1e5a8e;
+        }
+
+        .card-icon.green {
+            background-color: #e6f7ed;
+            color: #27ae60;
+        }
+
+        .card-icon.orange {
+            background-color: #fff3e0;
+            color: #f39c12;
+        }
+
+        .card-icon.red {
+            background-color: #fde8e8;
+            color: #e74c3c;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: #7f8c9a;
+            line-height: 1.5;
+        }
+
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f4f8;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #7f8c9a;
+            margin-top: 4px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.success {
+            background-color: #d4edda;
+            color: #27ae60;
+        }
+
+        .status-badge.warning {
+            background-color: #fff3cd;
+            color: #f39c12;
+        }
+
+        .status-badge.danger {
+            background-color: #f8d7da;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <span class="back-arrow">←</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">🔍</span>
+        </div>
+        <div class="nav-item active">
+            <span class="nav-icon">🏠</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">📦</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">📄</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">💳</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">📁</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left"></div>
+            <div class="header-right">
+                <button class="icon-button">
+                    <span style="font-size: 20px;">❓</span>
+                </button>
+                <button class="icon-button">
+                    <span style="font-size: 20px;">⚙️</span>
+                </button>
+                <button class="icon-button">
+                    <span style="font-size: 20px;">📧</span>
+                </button>
+                <div class="user-profile">
+                    <div class="user-avatar">KS</div>
+                    <div class="user-info">
+                        <div class="user-name">Kepa Syntax</div>
+                        <div class="user-email">kepa@syntax.com</div>
+                    </div>
+                    <span style="color: #cbd5e0;">⋮</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <span class="breadcrumb-item">🏠</span>
+            <span class="breadcrumb-separator">›</span>
+            <span class="breadcrumb-item active">Dashboard</span>
+        </div>
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <h1>Panel de Control ISO 27001 / ISO 20000-1</h1>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- PAC Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon blue">📋</div>
+                    <span class="status-badge warning">3 Pendientes</span>
+                </div>
+                <div class="card-title">Plan de Acciones Correctivas (PAC)</div>
+                <div class="card-description">
+                    Seguimiento y gestión de acciones correctivas derivadas de no conformidades y auditorías
+                </div>
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Activas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Cerradas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">85%</div>
+                        <div class="stat-label">Eficacia</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAM Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon green">📈</div>
+                    <span class="status-badge success">Al día</span>
+                </div>
+                <div class="card-title">Plan de Acciones de Mejora (PAM)</div>
+                <div class="card-description">
+                    Gestión de oportunidades de mejora y seguimiento de iniciativas de optimización
+                </div>
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">18</div>
+                        <div class="stat-label">En curso</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">25</div>
+                        <div class="stat-label">Completadas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">72%</div>
+                        <div class="stat-label">Progreso</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indicadores Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon orange">📊</div>
+                    <span class="status-badge warning">2 Alertas</span>
+                </div>
+                <div class="card-title">Indicadores de Proceso</div>
+                <div class="card-description">
+                    Monitorización de KPIs y métricas de rendimiento de los procesos del SGC
+                </div>
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">24</div>
+                        <div class="stat-label">Indicadores</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">22</div>
+                        <div class="stat-label">En meta</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">92%</div>
+                        <div class="stat-label">Cumplimiento</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objetivos Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon blue">🎯</div>
+                    <span class="status-badge success">En seguimiento</span>
+                </div>
+                <div class="card-title">Objetivos y Planes de Acción</div>
+                <div class="card-description">
+                    Seguimiento de objetivos anuales, planes de acción asociados y mediciones
+                </div>
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Objetivos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">32</div>
+                        <div class="stat-label">Acciones</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">68%</div>
+                        <div class="stat-label">Avance</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informes Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon green">📑</div>
+                    <span class="status-badge success">Actualizado</span>
+                </div>
+                <div class="card-title">Control de Informes</div>
+                <div class="card-description">
+                    Gestión de informes mensuales y trimestrales por servicio y seguimiento de entregas
+                </div>
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">15</div>
+                        <div class="stat-label">Servicios</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">45</div>
+                        <div class="stat-label">Informes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">Entregados</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quejas y Reclamaciones Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon red">⚠️</div>
+                    <span class="status-badge danger">4 Abiertas</span>
+                </div>
+                <div class="card-title">Quejas y Reclamaciones</div>
+                <div class="card-description">
+                    Gestión de quejas y reclamaciones de clientes sobre servicios prestados
+                </div>
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Abiertas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">28</div>
+                        <div class="stat-label">Resueltas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2.5d</div>
+                        <div class="stat-label">Tiempo medio</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pruebas de Continuidad Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon orange">🔄</div>
+                    <span class="status-badge warning">Próxima: 15d</span>
+                </div>
+                <div class="card-title">Pruebas de Continuidad</div>
+                <div class="card-description">
+                    Seguimiento y validación de pruebas del plan de continuidad de negocio anual
+                </div>
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Planificadas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Realizadas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">67%</div>
+                        <div class="stat-label">Completado</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auditorías Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon blue">🔍</div>
+                    <span class="status-badge success">Planificada</span>
+                </div>
+                <div class="card-title">Auditorías Internas</div>
+                <div class="card-description">
+                    Planificación y seguimiento de auditorías internas del sistema de gestión
+                </div>
+                <div class="card-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Realizadas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Pendientes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">14</div>
+                        <div class="stat-label">Hallazgos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

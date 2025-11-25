@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas de Continuidad - Sistema de Gestión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            color: #2c3e50;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 90px;
+            height: 100vh;
+            background-color: #ffffff;
+            border-right: 1px solid #e5e9f2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            z-index: 100;
+        }
+
+        .logo-container {
+            width: 50px;
+            height: 50px;
+            background-color: #1e5a8e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+            cursor: pointer;
+        }
+
+        .main-content {
+            margin-left: 90px;
+        }
+
+        .header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e9f2;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background-color: #1e5a8e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .breadcrumb {
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #7f8c9a;
+        }
+
+        .page-header {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .btn-primary {
+            background-color: #1e5a8e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timeline-container {
+            margin: 30px 40px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .timeline-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .timeline-filters {
+            display: flex;
+            gap: 12px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #cbd5e0;
+            background-color: white;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background-color: #1e5a8e;
+            color: white;
+            border-color: #1e5a8e;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 30px;
+            top: 40px;
+            bottom: 40px;
+            width: 2px;
+            background-color: #e5e9f2;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 80px;
+            margin-bottom: 40px;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 18px;
+            top: 8px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .timeline-marker.completed {
+            background-color: #27ae60;
+            border: 3px solid #d4edda;
+        }
+
+        .timeline-marker.upcoming {
+            background-color: #f39c12;
+            border: 3px solid #fff3cd;
+        }
+
+        .timeline-marker.pending {
+            background-color: #cbd5e0;
+            border: 3px solid #f0f4f8;
+        }
+
+        .timeline-content {
+            background-color: #f8fafb;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #e5e9f2;
+            transition: box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .timeline-content:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .timeline-date {
+            font-size: 12px;
+            font-weight: 600;
+            color: #7f8c9a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-test-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .timeline-description {
+            font-size: 14px;
+            color: #5a6c7d;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .timeline-meta {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-label {
+            font-size: 12px;
+            color: #7f8c9a;
+        }
+
+        .meta-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background-color: #d4edda;
+            color: #27ae60;
+        }
+
+        .status-upcoming {
+            background-color: #fff3cd;
+            color: #f39c12;
+        }
+
+        .status-pending {
+            background-color: #e8f2f8;
+            color: #1e5a8e;
+        }
+
+        .result-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .result-success {
+            background-color: #d4edda;
+            color: #27ae60;
+        }
+
+        .result-partial {
+            background-color: #fff3cd;
+            color: #f39c12;
+        }
+
+        .result-failed {
+            background-color: #f8d7da;
+            color: #e74c3c;
+        }
+
+        .summary-grid {
+            margin: 30px 40px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .summary-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .summary-icon.green {
+            background-color: #e6f7ed;
+        }
+
+        .summary-icon.orange {
+            background-color: #fff3e0;
+        }
+
+        .summary-icon.blue {
+            background-color: #e8f2f8;
+        }
+
+        .summary-icon.purple {
+            background-color: #f3e8ff;
+        }
+
+        .summary-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .summary-label {
+            font-size: 14px;
+            color: #7f8c9a;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-container">
+            <span style="color: white; font-size: 24px; font-weight: bold;">←</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div></div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <button style="border: none; background: none; cursor: pointer; font-size: 20px;">❓</button>
+                <button style="border: none; background: none; cursor: pointer; font-size: 20px;">⚙️</button>
+                <button style="border: none; background: none; cursor: pointer; font-size: 20px;">📧</button>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="user-avatar">KS</div>
+                    <div>
+                        <div style="font-weight: 600; font-size: 14px;">Kepa Syntax</div>
+                        <div style="font-size: 12px; color: #7f8c9a;">kepa@syntax.com</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <span>🏠</span>
+            <span style="color: #cbd5e0;">›</span>
+            <span style="color: #7f8c9a;">Gestión de Calidad</span>
+            <span style="color: #cbd5e0;">›</span>
+            <span style="color: #2c3e50;">Pruebas de Continuidad</span>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-title">
+                Pruebas de Continuidad del Negocio
+            </div>
+            <button class="btn-primary">
+                <span>+</span>
+                <span>Programar nueva prueba</span>
+            </button>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="summary-icon green">
+                    <span>✓</span>
+                </div>
+                <div class="summary-value">8</div>
+                <div class="summary-label">Realizadas</div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon orange">
+                    <span>⏰</span>
+                </div>
+                <div class="summary-value">4</div>
+                <div class="summary-label">Planificadas</div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon blue">
+                    <span>📋</span>
+                </div>
+                <div class="summary-value">12</div>
+                <div class="summary-label">Total anual</div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon purple">
+                    <span>%</span>
+                </div>
+                <div class="summary-value">87%</div>
+                <div class="summary-label">Tasa de éxito</div>
+            </div>
+        </div>
+
+        <!-- Timeline Container -->
+        <div class="timeline-container">
+            <div class="timeline-header">
+                <div class="timeline-title">Calendario de Pruebas 2024-2025</div>
+                <div class="timeline-filters">
+                    <button class="filter-btn active">Todas</button>
+                    <button class="filter-btn">Completadas</button>
+                    <button class="filter-btn">Próximas</button>
+                    <button class="filter-btn">Pendientes</button>
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="timeline">
+                <div class="timeline-line"></div>
+
+                <!-- Timeline Item 1 - Completed -->
+                <div class="timeline-item">
+                    <div class="timeline-marker completed">
+                        <span style="color: white; font-size: 14px;">✓</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">15 Enero 2024</div>
+                        <div class="timeline-test-title">Prueba de Restauración de Backup</div>
+                        <div class="timeline-description">
+                            Validación de la restauración completa de backups de sistemas críticos y verificación de integridad de datos.
+                        </div>
+                        <div class="timeline-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">Responsable</div>
+                                <div class="meta-value">Carlos Ruiz</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Duración</div>
+                                <div class="meta-value">4 horas</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Estado</div>
+                                <span class="status-badge status-completed">Completada</span>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Resultado</div>
+                                <span class="result-badge result-success">Exitosa</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 2 - Completed -->
+                <div class="timeline-item">
+                    <div class="timeline-marker completed">
+                        <span style="color: white; font-size: 14px;">✓</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">28 Febrero 2024</div>
+                        <div class="timeline-test-title">Simulación de Fallo de Centro de Datos Principal</div>
+                        <div class="timeline-description">
+                            Activación del sitio alterno y migración de servicios críticos. Validación de RTO y RPO definidos.
+                        </div>
+                        <div class="timeline-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">Responsable</div>
+                                <div class="meta-value">María García</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Duración</div>
+                                <div class="meta-value">8 horas</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Estado</div>
+                                <span class="status-badge status-completed">Completada</span>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Resultado</div>
+                                <span class="result-badge result-success">Exitosa</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 3 - Completed -->
+                <div class="timeline-item">
+                    <div class="timeline-marker completed">
+                        <span style="color: white; font-size: 14px;">✓</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">15 Abril 2024</div>
+                        <div class="timeline-test-title">Prueba de Comunicaciones de Crisis</div>
+                        <div class="timeline-description">
+                            Validación de canales de comunicación alternativos y activación del equipo de gestión de crisis.
+                        </div>
+                        <div class="timeline-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">Responsable</div>
+                                <div class="meta-value">Ana Martínez</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Duración</div>
+                                <div class="meta-value">3 horas</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Estado</div>
+                                <span class="status-badge status-completed">Completada</span>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Resultado</div>
+                                <span class="result-badge result-partial">Parcial</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 4 - Completed -->
+                <div class="timeline-item">
+                    <div class="timeline-marker completed">
+                        <span style="color: white; font-size: 14px;">✓</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">20 Mayo 2024</div>
+                        <div class="timeline-test-title">Recuperación de Base de Datos Crítica</div>
+                        <div class="timeline-description">
+                            Prueba de recuperación point-in-time de la base de datos principal y validación de consistencia.
+                        </div>
+                        <div class="timeline-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">Responsable</div>
+                                <div class="meta-value">Pedro Sánchez</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Duración</div>
+                                <div class="meta-value">5 horas</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Estado</div>
+                                <span class="status-badge status-completed">Completada</span>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Resultado</div>
+                                <span class="result-badge result-success">Exitosa</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 5 - Upcoming -->
+                <div class="timeline-item">
+                    <div class="timeline-marker upcoming">
+                        <span style="color: white; font-size: 14px;">⏰</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">10 Diciembre 2024</div>
+                        <div class="timeline-test-title">Simulacro de Ciberataque y Respuesta</div>
+                        <div class="timeline-description">
+                            Prueba de detección, contención y recuperación ante un incidente de seguridad grave. Activación del plan de respuesta.
+                        </div>
+                        <div class="timeline-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">Responsable</div>
+                                <div class="meta-value">Laura Fernández</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Duración estimada</div>
+                                <div class="meta-value">6 horas</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Estado</div>
+                                <span class="status-badge status-upcoming">Próxima (15 días)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 6 - Pending -->
+                <div class="timeline-item">
+                    <div class="timeline-marker pending">
+                        <span style="color: white; font-size: 14px;">○</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">15 Enero 2025</div>
+                        <div class="timeline-test-title">Prueba de Continuidad de Operaciones Remotas</div>
+                        <div class="timeline-description">
+                            Validación de la capacidad del equipo para operar completamente en remoto durante una emergencia.
+                        </div>
+                        <div class="timeline-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">Responsable</div>
+                                <div class="meta-value">Javier López</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Duración estimada</div>
+                                <div class="meta-value">1 día</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Estado</div>
+                                <span class="status-badge status-pending">Planificada</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 7 - Pending -->
+                <div class="timeline-item">
+                    <div class="timeline-marker pending">
+                        <span style="color: white; font-size: 14px;">○</span>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">20 Marzo 2025</div>
+                        <div class="timeline-test-title">Prueba de Recuperación de Aplicaciones Críticas</div>
+                        <div class="timeline-description">
+                            Recuperación completa de aplicaciones de negocio en entorno alterno y validación de funcionalidad.
+                        </div>
+                        <div class="timeline-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">Responsable</div>
+                                <div class="meta-value">Roberto Díaz</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Duración estimada</div>
+                                <div class="meta-value">6 horas</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">Estado</div>
+                                <span class="status-badge status-pending">Planificada</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

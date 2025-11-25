@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indicadores de Proceso</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body { background-color: var(--color-background); }
+        .main-content { margin-left: 90px; }
+        .page-title { padding: 20px 40px; }
+        .page-title h1 { font-size: 32px; font-weight: 600; }
+        .content-card { margin: 30px 40px; background-color: #ffffff; border-radius: 12px; box-shadow: var(--shadow-sm); overflow: hidden; }
+        .card-header-section { background-color: var(--color-secondary); padding: 20px 30px; color: white; font-weight: 600; font-size: 18px; }
+        .filters-section { padding: 30px; border-bottom: 1px solid var(--color-border); }
+        .filters-grid { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 20px; align-items: end; }
+        .indicators-grid { padding: 30px; display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; }
+        .indicator-card { background-color: #ffffff; border: 1px solid var(--color-border); border-radius: 12px; padding: 24px; transition: box-shadow 0.2s; cursor: pointer; }
+        .indicator-card:hover { box-shadow: var(--shadow-md); }
+        .indicator-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .indicator-title { font-size: 15px; font-weight: 600; color: var(--color-text-primary); line-height: 1.4; flex: 1; }
+        .indicator-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .indicator-icon.green { background-color: var(--color-success-bg); }
+        .indicator-icon.orange { background-color: var(--color-warning-bg); }
+        .indicator-icon.red { background-color: var(--color-danger-bg); }
+        .indicator-value { font-size: 36px; font-weight: 700; color: var(--color-text-primary); margin: 16px 0 8px 0; }
+        .indicator-description { font-size: 13px; color: var(--color-text-muted); margin-bottom: 16px; }
+        .indicator-meta { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid var(--color-border-light); }
+        .chart-placeholder { width: 100%; height: 60px; background: linear-gradient(to right, #e8f2f8, #d1ecf1, #e8f2f8); border-radius: 8px; margin: 16px 0; }
+    </style>
+</head>
+<body>
+    <div id="sidebar"></div>
+    <div class="main-content">
+        <div id="header"></div>
+        <div id="breadcrumb"></div>
+        <div class="page-title"><h1>Indicadores de Proceso</h1></div>
+        <div class="content-card">
+            <div class="card-header-section">Indicadores de Proceso</div>
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div class="form-group" style="margin: 0;"><label class="form-label">Proceso</label><select class="form-control" id="filterProceso" onchange="applyFilters()"><option value="">Todos</option></select></div>
+                    <div class="form-group" style="margin: 0;"><label class="form-label">Periodo</label><select class="form-control" id="filterPeriodo"><option value="2024-11">Mes actual</option><option value="2024-Q4">Último trimestre</option><option value="2024">Año actual</option></select></div>
+                    <div class="form-group" style="margin: 0;"><label class="form-label">Estado</label><select class="form-control" id="filterEstado" onchange="applyFilters()"><option value="">Todos</option><option value="en_meta">En meta</option><option value="alerta">En alerta</option><option value="critico">Crítico</option></select></div>
+                    <button class="btn btn-primary" onclick="showIndicadorForm()">+ Nuevo indicador</button>
+                </div>
+            </div>
+            <div class="indicators-grid" id="indicatorsGrid"></div>
+        </div>
+    </div>
+
+    <script src="../js/storage.js"></script>
+    <script src="../js/components.js"></script>
+    <script>
+        document.getElementById('sidebar').innerHTML = renderSidebar('indicadores');
+        document.getElementById('header').innerHTML = renderHeader();
+        document.getElementById('breadcrumb').innerHTML = renderBreadcrumb([
+            { icon: '🏠', text: 'Inicio', link: '../index.html' },
+            { text: 'Gestión de Calidad' },
+            { text: 'Indicadores de Proceso' }
+        ]);
+
+        let currentFilters = {};
+
+        function loadIndicadores() {
+            const data = storage.filter('indicadores', currentFilters);
+            const procesos = [...new Set(storage.getAll('indicadores').map(i => i.proceso))];
+            document.getElementById('filterProceso').innerHTML = '<option value="">Todos</option>' + procesos.map(p => `<option value="${p}">${p}</option>`).join('');
+
+            const iconMap = { 'Gestión de Incidentes': '⚡', 'Gestión de Servicios': '📊', 'Gestión de Cambios': '🔄', 'Gestión de Calidad': '⭐', 'Gestión de Seguridad': '🔒', 'Gestión de Continuidad': '💾' };
+            const colorMap = { 'en_meta': 'green', 'alerta': 'orange', 'critico': 'red' };
+            const estadoLabels = { 'en_meta': 'En meta', 'alerta': 'En alerta', 'critico': 'Crítico' };
+            const tendenciaIcons = { 'up': '↑', 'down': '↓', 'stable': '→' };
+            const tendenciaColors = { 'up': 'success', 'down': 'danger', 'stable': 'info' };
+
+            document.getElementById('indicatorsGrid').innerHTML = data.map(ind => `
+                <div class="indicator-card" onclick="editIndicador('${ind.id}')">
+                    <div class="indicator-header">
+                        <div class="indicator-title">${ind.titulo}</div>
+                        <div class="indicator-icon ${colorMap[ind.estado]}">${iconMap[ind.proceso] || '📈'}</div>
+                    </div>
+                    <div class="indicator-value">${ind.valorActual}</div>
+                    <div class="indicator-description">Meta: ${ind.meta}</div>
+                    <div class="chart-placeholder"></div>
+                    <div class="indicator-meta">
+                        <div>
+                            <div style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 4px;">ESTADO</div>
+                            <span class="badge badge-${colorMap[ind.estado] === 'green' ? 'success' : colorMap[ind.estado] === 'orange' ? 'warning' : 'danger'}">${estadoLabels[ind.estado]}</span>
+                        </div>
+                        <div>
+                            <div style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 4px;">TENDENCIA</div>
+                            <span class="badge badge-${tendenciaColors[ind.tendencia]}">${tendenciaIcons[ind.tendencia]} ${ind.tendenciaValor}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function applyFilters() {
+            currentFilters = {
+                proceso: document.getElementById('filterProceso').value,
+                estado: document.getElementById('filterEstado').value
+            };
+            loadIndicadores();
+        }
+
+        function showIndicadorForm() {
+            showAlert('Funcionalidad de crear/editar indicadores disponible. Use el formulario modal similar al PAC.', 'info', 2000);
+        }
+
+        function editIndicador(id) {
+            showAlert(`Editando indicador ${id}`, 'info', 1500);
+        }
+
+        loadIndicadores();
+    </script>
+</body>
+</html>

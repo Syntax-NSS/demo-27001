@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quejas y Reclamaciones</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        body { background-color: var(--color-background); }
+        .main-content { margin-left: 90px; }
+        .page-title { padding: 20px 40px; }
+        .page-title h1 { font-size: 32px; font-weight: 600; }
+        .stats-row { margin: 0 40px 30px 40px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .stat-card { background-color: #ffffff; border-radius: 12px; padding: 24px; box-shadow: var(--shadow-sm); }
+        .stat-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; }
+        .stat-icon.red { background-color: var(--color-danger-bg); }
+        .stat-icon.orange { background-color: var(--color-warning-bg); }
+        .stat-icon.green { background-color: var(--color-success-bg); }
+        .stat-icon.blue { background-color: var(--color-info-bg); }
+        .stat-value { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .stat-label { font-size: 14px; color: var(--color-text-muted); }
+        .content-card { margin: 0 40px 40px 40px; background-color: #ffffff; border-radius: 12px; box-shadow: var(--shadow-sm); overflow: hidden; }
+        .card-header-section { background-color: var(--color-secondary); padding: 20px 30px; color: white; font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; }
+        .filters-section { padding: 30px; border-bottom: 1px solid var(--color-border); }
+        .filters-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 2fr auto; gap: 20px; align-items: end; }
+    </style>
+</head>
+<body>
+    <div id="sidebar"></div>
+    <div class="main-content">
+        <div id="header"></div>
+        <div id="breadcrumb"></div>
+        <div class="page-title"><h1>Gestión de Quejas y Reclamaciones</h1></div>
+        <div class="stats-row" id="statsRow"></div>
+        <div class="content-card">
+            <div class="card-header-section">
+                <span>Listado de Quejas y Reclamaciones</span>
+                <button class="btn btn-sm" style="background-color: white; color: var(--color-secondary);" onclick="showQuejaForm()">+ Nueva queja</button>
+            </div>
+            <div class="filters-section">
+                <div class="filters-grid">
+                    <div class="form-group" style="margin: 0;"><label class="form-label">Estado</label><select class="form-control" id="filterEstado" onchange="applyFilters()"><option value="">Todos</option><option value="abierta">Abierta</option><option value="en_progreso">En progreso</option><option value="resuelta">Resuelta</option><option value="cerrada">Cerrada</option></select></div>
+                    <div class="form-group" style="margin: 0;"><label class="form-label">Gravedad</label><select class="form-control" id="filterGravedad" onchange="applyFilters()"><option value="">Todas</option><option value="alta">Alta</option><option value="media">Media</option><option value="baja">Baja</option></select></div>
+                    <div class="form-group" style="margin: 0;"><label class="form-label">Servicio</label><select class="form-control" id="filterServicio" onchange="applyFilters()"><option value="">Todos</option></select></div>
+                    <div class="form-group" style="margin: 0;"><label class="form-label">Buscar</label><input type="text" class="form-control" id="filterSearch" placeholder="Cliente o descripción..." oninput="applyFilters()"></div>
+                    <button class="btn btn-secondary" onclick="clearFilters()">Limpiar</button>
+                </div>
+            </div>
+            <div id="quejasTableContainer"></div>
+        </div>
+    </div>
+
+    <div id="quejaFormModal" class="modal-overlay" style="display: none;" onclick="closeModalOnOverlayClick(event, 'quejaFormModal')">
+        <div class="modal" onclick="event.stopPropagation()" style="max-width: 800px;">
+            <div class="modal-header"><h3 class="modal-title" id="modalTitle">Nueva Queja/Reclamación</h3><button class="modal-close" onclick="closeModal('quejaFormModal')">&times;</button></div>
+            <div class="modal-body">
+                <form id="quejaForm">
+                    <input type="hidden" id="quejaId">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group"><label class="form-label required">Cliente</label><input type="text" class="form-control" id="cliente" required><span class="form-error"></span></div>
+                        <div class="form-group"><label class="form-label required">Servicio</label><input type="text" class="form-control" id="servicio" required><span class="form-error"></span></div>
+                    </div>
+                    <div class="form-group"><label class="form-label required">Descripción</label><textarea class="form-control" id="descripcion" required rows="3"></textarea><span class="form-error"></span></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                        <div class="form-group"><label class="form-label required">Gravedad</label><select class="form-control" id="gravedad" required><option value="">Seleccionar...</option><option value="alta">Alta</option><option value="media">Media</option><option value="baja">Baja</option></select><span class="form-error"></span></div>
+                        <div class="form-group"><label class="form-label required">Responsable</label><input type="text" class="form-control" id="responsable" required><span class="form-error"></span></div>
+                        <div class="form-group"><label class="form-label required">Estado</label><select class="form-control" id="estado" required><option value="abierta">Abierta</option><option value="en_progreso">En progreso</option><option value="resuelta">Resuelta</option><option value="cerrada">Cerrada</option></select><span class="form-error"></span></div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group"><label class="form-label required">Fecha Registro</label><input type="date" class="form-control" id="fechaRegistro" required><span class="form-error"></span></div>
+                        <div class="form-group"><label class="form-label required">Fecha Límite</label><input type="date" class="form-control" id="fechaLimite" required><span class="form-error"></span></div>
+                    </div>
+                    <div class="form-group"><label class="form-label">Resolución</label><textarea class="form-control" id="resolucion" rows="3"></textarea></div>
+                </form>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('quejaFormModal')">Cancelar</button><button class="btn btn-primary" onclick="saveQueja()">Guardar</button></div>
+        </div>
+    </div>
+
+    <script src="../js/storage.js"></script>
+    <script src="../js/components.js"></script>
+    <script>
+        document.getElementById('sidebar').innerHTML = renderSidebar('quejas');
+        document.getElementById('header').innerHTML = renderHeader();
+        document.getElementById('breadcrumb').innerHTML = renderBreadcrumb([
+            { icon: '🏠', text: 'Inicio', link: '../index.html' },
+            { text: 'Gestión de Calidad' },
+            { text: 'Quejas y Reclamaciones' }
+        ]);
+
+        let currentFilters = {};
+
+        function loadStats() {
+            const stats = storage.getDashboardStats().quejas;
+            document.getElementById('statsRow').innerHTML = `
+                <div class="stat-card"><div class="stat-icon red">⚠️</div><div class="stat-value">${stats.abiertas}</div><div class="stat-label">Abiertas</div></div>
+                <div class="stat-card"><div class="stat-icon orange">⏱️</div><div class="stat-value">${stats.enProgreso}</div><div class="stat-label">En progreso</div></div>
+                <div class="stat-card"><div class="stat-icon green">✓</div><div class="stat-value">${stats.resueltas}</div><div class="stat-label">Resueltas (mes)</div></div>
+                <div class="stat-card"><div class="stat-icon blue">⏰</div><div class="stat-value">2.5d</div><div class="stat-label">Tiempo medio</div></div>
+            `;
+        }
+
+        function loadQuejas() {
+            const data = storage.filter('quejas', currentFilters);
+            const servicios = [...new Set(storage.getAll('quejas').map(q => q.servicio))];
+            document.getElementById('filterServicio').innerHTML = '<option value="">Todos</option>' + servicios.map(s => `<option value="${s}">${s}</option>`).join('');
+
+            document.getElementById('quejasTableContainer').innerHTML = `
+                <div class="table-wrapper"><table><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Servicio</th><th>Descripción</th><th>Gravedad</th><th>Responsable</th><th>Estado</th><th>F. Límite</th><th></th></tr></thead><tbody>
+                ${data.map(q => `
+                    <tr>
+                        <td><strong>${q.id}</strong></td>
+                        <td>${formatDate(q.fechaRegistro)}</td>
+                        <td>${q.cliente}</td>
+                        <td>${q.servicio}</td>
+                        <td>${q.descripcion.substring(0, 50)}...</td>
+                        <td>${renderPriorityBadge(q.gravedad)}</td>
+                        <td>${q.responsable}</td>
+                        <td>${renderEstadoQuejaBadge(q.estado)}</td>
+                        <td>${formatDate(q.fechaLimite)}</td>
+                        <td><div style="display: flex; gap: 8px;"><button class="btn btn-sm btn-primary" onclick="editQueja('${q.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="deleteQueja('${q.id}')">🗑️</button></div></td>
+                    </tr>
+                `).join('')}
+                </tbody></table></div>
+            `;
+        }
+
+        function applyFilters() {
+            currentFilters = {
+                estado: document.getElementById('filterEstado').value,
+                gravedad: document.getElementById('filterGravedad').value,
+                servicio: document.getElementById('filterServicio').value,
+                descripcion: document.getElementById('filterSearch').value,
+                cliente: document.getElementById('filterSearch').value
+            };
+            loadQuejas();
+        }
+
+        function clearFilters() {
+            document.getElementById('filterEstado').value = '';
+            document.getElementById('filterGravedad').value = '';
+            document.getElementById('filterServicio').value = '';
+            document.getElementById('filterSearch').value = '';
+            currentFilters = {};
+            loadQuejas();
+        }
+
+        function showQuejaForm(id = null) {
+            document.getElementById('modalTitle').textContent = id ? 'Editar Queja' : 'Nueva Queja/Reclamación';
+            clearForm('quejaForm');
+            if (id) {
+                const queja = storage.getById('quejas', id);
+                if (queja) {
+                    document.getElementById('quejaId').value = queja.id;
+                    document.getElementById('cliente').value = queja.cliente;
+                    document.getElementById('servicio').value = queja.servicio;
+                    document.getElementById('descripcion').value = queja.descripcion;
+                    document.getElementById('gravedad').value = queja.gravedad;
+                    document.getElementById('responsable').value = queja.responsable;
+                    document.getElementById('estado').value = queja.estado;
+                    document.getElementById('fechaRegistro').value = queja.fechaRegistro;
+                    document.getElementById('fechaLimite').value = queja.fechaLimite;
+                    document.getElementById('resolucion').value = queja.resolucion || '';
+                }
+            } else {
+                document.getElementById('fechaRegistro').value = new Date().toISOString().split('T')[0];
+            }
+            openModal('quejaFormModal');
+        }
+
+        function editQueja(id) { showQuejaForm(id); }
+
+        function saveQueja() {
+            if (!validateForm('quejaForm')) return;
+            const id = document.getElementById('quejaId').value;
+            const data = {
+                cliente: document.getElementById('cliente').value,
+                servicio: document.getElementById('servicio').value,
+                descripcion: document.getElementById('descripcion').value,
+                gravedad: document.getElementById('gravedad').value,
+                responsable: document.getElementById('responsable').value,
+                estado: document.getElementById('estado').value,
+                fechaRegistro: document.getElementById('fechaRegistro').value,
+                fechaLimite: document.getElementById('fechaLimite').value,
+                resolucion: document.getElementById('resolucion').value
+            };
+
+            if (id) {
+                storage.update('quejas', id, data);
+                showAlert('Queja actualizada exitosamente', 'success');
+            } else {
+                storage.create('quejas', data);
+                showAlert('Queja creada exitosamente', 'success');
+            }
+            closeModal('quejaFormModal');
+            loadStats();
+            loadQuejas();
+        }
+
+        function deleteQueja(id) {
+            if (confirm('¿Eliminar esta queja?')) {
+                storage.delete('quejas', id);
+                showAlert('Queja eliminada', 'success');
+                loadStats();
+                loadQuejas();
+            }
+        }
+
+        loadStats();
+        loadQuejas();
+    </script>
+</body>
+</html>
